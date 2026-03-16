@@ -161,6 +161,35 @@ section { padding: 120px 0; }
   letter-spacing: -2px; margin-bottom: 60px;
 }
 
+/* About */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+}
+.about-card-main {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, var(--coral) 0%, var(--rose) 100%) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+}
+.about-card-main .about-card-title { color: #fff; }
+.about-card-main .about-card-desc { opacity: 0.85; }
+.about-card-main .about-emoji { color: #fff; }
+.about-card {
+  padding: 32px 28px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(26,20,16,0.08);
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s;
+}
+.about-card:hover { transform: translateY(-3px); }
+.about-emoji { font-size: 24px; margin-bottom: 14px; }
+.about-card-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 10px; }
+.about-card-desc { font-size: 14px; opacity: 0.55; line-height: 1.7; font-weight: 300; }
+
 /* 프로젝트 */
 .projects-grid { display: flex; flex-direction: column; gap: 24px; }
 .project-card {
@@ -265,8 +294,9 @@ footer {
 
 <nav>
   <div class="nav-inner">
-    <div class="nav-logo">flowen.</div>
+    <div class="nav-logo">fw.</div>
     <ul class="nav-links">
+      <li><a href="#about">about</a></li>
       <li><a href="#projects">프로젝트</a></li>
       <li><a href="#skills">기술</a></li>
       <li><a href="#contact">연락처</a></li>
@@ -299,6 +329,33 @@ footer {
   </div>
 </section>
 
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">About</p>
+    <h2 class="section-title">나에 대해</h2>
+    <div class="about-grid">
+      <div class="about-card about-card-main">
+        <div class="about-card-inner">
+          <div class="about-emoji">✦</div>
+          <h3 class="about-card-title">AI 부트캠프 수강 중</h3>
+          <p class="about-card-desc">비전공자로 AI 분야에 뛰어들어 현재 부트캠프에서 집중 학습 중입니다. 수업에서 배운 개념을 바로 실제 프로젝트로 연결하는 것을 즐깁니다.</p>
+        </div>
+      </div>
+      <div class="about-card">
+        <div class="about-emoji">⚡</div>
+        <h3 class="about-card-title">추가 예정</h3>
+        <p class="about-card-desc">이 칸에 경력이나 활동을 추가해주세요.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-emoji">🌱</div>
+        <h3 class="about-card-title">추가 예정</h3>
+        <p class="about-card-desc">이 칸에 경력이나 활동을 추가해주세요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 프로젝트 -->
 <section id="projects">
   <div class="container">
@@ -306,7 +363,7 @@ footer {
     <h2 class="section-title">직접 만든 것들</h2>
     <div class="projects-grid">
 
-      <a href="https://jihyun-kr.github.io/zero-to-llm/" target="_blank" class="project-card featured">
+      <a href="https://github.com/jihyun-KR/zero-to-llm" target="_blank" class="project-card featured">
         <div>
           <p class="project-num">01</p>
           <h3 class="project-title">zero-to-llm</h3>
@@ -401,7 +458,7 @@ footer {
       <a href="https://github.com/YOUR_GITHUB_ID" target="_blank" class="contact-link primary">
         GitHub ↗
       </a>
-      <a href="mailto:YOUR_EMAIL@example.com" class="contact-link outline">
+      <a href="/cdn-cgi/l/email-protection#a9f0e6fcfbf6ece4e8e0e5e9ccd1c8c4d9c5cc87cac6c4" class="contact-link outline">
         Email
       </a>
       <a href="https://linkedin.com/in/YOUR_ID" target="_blank" class="contact-link outline">
@@ -418,7 +475,7 @@ footer {
   </footer>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
 let mx = 0, my = 0, rx = 0, ry = 0;
@@ -462,9 +519,4 @@ const observer = new IntersectionObserver(entries => {
 document.querySelectorAll('.project-card, .skill-card').forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(30px)';
-  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, box-shadow 0.25s ease, border-color 0.25s';
-  observer.observe(el);
-});
-</script>
-</body>
-</html>
+  el.style
