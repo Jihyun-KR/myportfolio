@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>jihyun — AI Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #faf6f0;
+  --ink: #1a1410;
+  --coral: #ff6b4a;
+  --mint: #3ecfb2;
+  --lavender: #c4b5f7;
+  --gold: #f5c842;
+  --rose: #f2a0b0;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* 커스텀 커서 */
+.cursor {
+  width: 12px; height: 12px;
+  background: var(--coral);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease, background 0.2s;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--coral);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: all 0.12s ease;
+  opacity: 0.5;
+}
+
+/* 배경 장식 */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+.blob1 { width: 500px; height: 500px; background: var(--coral); top: -100px; right: -100px; animation: drift 12s ease-in-out infinite alternate; }
+.blob2 { width: 400px; height: 400px; background: var(--mint); bottom: 200px; left: -100px; animation: drift 15s ease-in-out infinite alternate-reverse; }
+.blob3 { width: 300px; height: 300px; background: var(--lavender); top: 50%; left: 40%; animation: drift 10s ease-in-out infinite alternate; }
+
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(30px, 40px) scale(1.08); }
+}
+
+/* 레이아웃 */
+.container { max-width: 900px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+/* 네비 */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 20px 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+  background: rgba(250, 246, 240, 0.7);
+  border-bottom: 1px solid rgba(26,20,16,0.06);
+}
+.nav-inner { max-width: 900px; margin: 0 auto; padding: 0 32px; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -1px; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 400; opacity: 0.6; transition: opacity 0.2s; }
+.nav-links a:hover { opacity: 1; }
+
+/* 히어로 */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-top: 80px;
+}
+.hero-eyebrow {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--coral); font-weight: 500; margin-bottom: 20px;
+  opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 12vw, 120px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -4px;
+  margin-bottom: 24px;
+  opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+}
+.hero-name .line2 {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ink);
+}
+.hero-name .accent { color: var(--coral); -webkit-text-stroke: 0; }
+.hero-desc {
+  font-size: 18px; max-width: 480px; opacity: 0.6; font-weight: 300;
+  margin-bottom: 48px;
+  opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+}
+.hero-tags {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+}
+.tag {
+  padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 500;
+  cursor: default; transition: transform 0.2s;
+}
+.tag:hover { transform: translateY(-2px); }
+.tag-coral { background: var(--coral); color: #fff; }
+.tag-mint  { background: var(--mint);  color: #fff; }
+.tag-lav   { background: var(--lavender); color: #fff; }
+.tag-gold  { background: var(--gold);  color: var(--ink); }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 32px;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  opacity: 0.35; display: flex; align-items: center; gap: 10px;
+}
+.scroll-line { width: 40px; height: 1px; background: var(--ink); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 섹션 공통 */
+section { padding: 120px 0; }
+.section-label {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--coral); font-weight: 500; margin-bottom: 16px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -2px; margin-bottom: 60px;
+}
+
+/* 프로젝트 */
+.projects-grid { display: flex; flex-direction: column; gap: 24px; }
+.project-card {
+  padding: 40px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(26,20,16,0.08);
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: start; gap: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+  text-decoration: none; color: inherit;
+  cursor: none;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(26,20,16,0.08);
+  border-color: rgba(26,20,16,0.15);
+}
+.project-card.featured { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+.project-card.featured .project-sub { opacity: 0.5; }
+.project-card.featured .project-tag { background: rgba(255,255,255,0.12); color: var(--cream); }
+.project-num { font-family: var(--font-display); font-size: 13px; opacity: 0.3; margin-bottom: 12px; }
+.project-title { font-family: var(--font-display); font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 10px; }
+.project-sub { font-size: 14px; opacity: 0.55; font-weight: 300; margin-bottom: 20px; line-height: 1.6; max-width: 520px; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.project-tag {
+  padding: 5px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  background: rgba(26,20,16,0.06);
+}
+.project-arrow {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; opacity: 0.4; transition: opacity 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.project-card:hover .project-arrow { opacity: 1; transform: translate(3px, -3px); }
+
+/* 스킬 */
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.skill-card {
+  padding: 28px 24px; border-radius: 16px;
+  border: 1.5px solid rgba(26,20,16,0.08);
+  background: rgba(255,255,255,0.5);
+  transition: transform 0.2s;
+}
+.skill-card:hover { transform: translateY(-3px); }
+.skill-icon { font-size: 28px; margin-bottom: 12px; }
+.skill-name { font-weight: 500; font-size: 15px; margin-bottom: 4px; }
+.skill-level { font-size: 12px; opacity: 0.45; }
+
+/* 연락처 */
+.contact-section { text-align: center; }
+.contact-section .section-title { margin-bottom: 20px; }
+.contact-desc { font-size: 17px; opacity: 0.5; font-weight: 300; margin-bottom: 48px; }
+.contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
+.contact-link {
+  padding: 16px 32px; border-radius: 100px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none; cursor: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.contact-link:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.contact-link.primary { background: var(--ink); color: var(--cream); }
+.contact-link.outline { border: 1.5px solid rgba(26,20,16,0.2); color: var(--ink); }
+
+/* 푸터 */
+footer {
+  border-top: 1px solid rgba(26,20,16,0.08);
+  padding: 32px 0;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; opacity: 0.4;
+}
+
+/* 컬러 스트라이프 데코 */
+.stripe-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--coral) 0%, var(--gold) 25%, var(--mint) 50%, var(--lavender) 75%, var(--rose) 100%);
+  width: 100%; position: fixed; top: 0; left: 0; z-index: 200;
+}
+
+/* 반응형 */
+@media (max-width: 600px) {
+  .project-card { grid-template-columns: 1fr; padding: 28px; }
+  .nav-links { display: none; }
+  .hero-name { letter-spacing: -2px; }
+}
+</style>
+</head>
+<body>
+
+<div class="stripe-bar"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="bg-blob blob1"></div>
+<div class="bg-blob blob2"></div>
+<div class="bg-blob blob3"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">jh.</div>
+    <ul class="nav-links">
+      <li><a href="#projects">프로젝트</a></li>
+      <li><a href="#skills">기술</a></li>
+      <li><a href="#contact">연락처</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 히어로 -->
+<section class="hero">
+  <div class="container">
+    <p class="hero-eyebrow">AI Designer &amp; Builder</p>
+    <h1 class="hero-name">
+      Ji<span class="accent">hy</span>un<br>
+      <span class="line2">Choi</span>
+    </h1>
+    <p class="hero-desc">
+      비전공자에서 LLM 파인튜닝 파이프라인을 직접 설계하기까지.<br>
+      기술과 사람 사이의 다리를 만듭니다.
+    </p>
+    <div class="hero-tags">
+      <span class="tag tag-coral">Azure ML</span>
+      <span class="tag tag-mint">LLM Fine-tuning</span>
+      <span class="tag tag-lav">RAG</span>
+      <span class="tag tag-gold">AI Foundry</span>
+    </div>
+  </div>
+  <div class="hero-scroll container">
+    <span class="scroll-line"></span>
+    scroll
+  </div>
+</section>
+
+<!-- 프로젝트 -->
+<section id="projects">
+  <div class="container">
+    <p class="section-label">Projects</p>
+    <h2 class="section-title">직접 만든 것들</h2>
+    <div class="projects-grid">
+
+      <a href="https://github.com/YOUR_ID/zero-to-llm" target="_blank" class="project-card featured">
+        <div>
+          <p class="project-num">01</p>
+          <h3 class="project-title">zero-to-llm</h3>
+          <p class="project-sub">ChatGPT 대화 데이터를 드래그앤드롭으로 JSONL 변환 후 Azure ML에서 LoRA 파인튜닝까지 — 노코드로 완성하는 LLM 파인튜닝 파이프라인.</p>
+          <div class="project-tags">
+            <span class="project-tag">Azure ML</span>
+            <span class="project-tag">LoRA / QLoRA</span>
+            <span class="project-tag">EXAONE 3.5</span>
+            <span class="project-tag">Hugging Face</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </a>
+
+      <div class="project-card">
+        <div>
+          <p class="project-num">02</p>
+          <h3 class="project-title">프로젝트 이름</h3>
+          <p class="project-sub">여기에 프로젝트 설명을 적어주세요.</p>
+          <div class="project-tags">
+            <span class="project-tag">태그1</span>
+            <span class="project-tag">태그2</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </div>
+
+      <div class="project-card">
+        <div>
+          <p class="project-num">03</p>
+          <h3 class="project-title">프로젝트 이름</h3>
+          <p class="project-sub">여기에 프로젝트 설명을 적어주세요.</p>
+          <div class="project-tags">
+            <span class="project-tag">태그1</span>
+            <span class="project-tag">태그2</span>
+          </div>
+        </div>
+        <div class="project-arrow">↗</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 스킬 -->
+<section id="skills">
+  <div class="container">
+    <p class="section-label">Skills</p>
+    <h2 class="section-title">할 수 있는 것들</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">☁️</div>
+        <div class="skill-name">Azure ML</div>
+        <div class="skill-level">GPU 클러스터 · Endpoint</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-name">LLM Fine-tuning</div>
+        <div class="skill-level">LoRA · QLoRA · PEFT</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔍</div>
+        <div class="skill-name">RAG</div>
+        <div class="skill-level">Azure AI Foundry · Index</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🐍</div>
+        <div class="skill-name">Python</div>
+        <div class="skill-level">데이터 처리 · 훈련 스크립트</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">HTML / JS</div>
+        <div class="skill-level">노코드 툴 제작</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🐱</div>
+        <div class="skill-name">GitHub</div>
+        <div class="skill-level">버전 관리 · 포트폴리오</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 연락처 -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <p class="section-label">Contact</p>
+    <h2 class="section-title">같이 만들어요</h2>
+    <p class="contact-desc">새로운 프로젝트, 협업, 혹은 그냥 안녕이라도 — 언제든 환영합니다.</p>
+    <div class="contact-links">
+      <a href="https://github.com/YOUR_GITHUB_ID" target="_blank" class="contact-link primary">
+        GitHub ↗
+      </a>
+      <a href="mailto:YOUR_EMAIL@example.com" class="contact-link outline">
+        Email
+      </a>
+      <a href="https://linkedin.com/in/YOUR_ID" target="_blank" class="contact-link outline">
+        LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <footer>
+    <span>jihyun © 2025</span>
+    <span>made with 💛</span>
+  </footer>
+</div>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+function animateCursor() {
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+document.querySelectorAll('a, button, .tag, .skill-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+    cursor.style.background = '#3ecfb2';
+    ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+    cursor.style.background = '#ff6b4a';
+    ring.style.transform = 'translate(-50%, -50%) scale(1)';
+  });
+});
+
+// 스크롤 페이드인
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.project-card, .skill-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease, box-shadow 0.25s ease, border-color 0.25s';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
