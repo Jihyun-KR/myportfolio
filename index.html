@@ -171,7 +171,7 @@
       position: relative; overflow: hidden;
       transition: transform .3s, box-shadow .3s;
     }
-    .card::before { content:''; position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--pink)); }
+    .card::before { content:''; position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--pink)); pointer-events:none; }
     .card:hover { transform: translateX(6px); box-shadow: -4px 8px 24px rgba(184,150,62,.1); }
     .card-icon { font-size:1.3rem; margin-bottom:8px; }
     .card-title { font-size:.95rem; font-weight:700; color:var(--ink); margin-bottom:3px; }
@@ -188,7 +188,7 @@
       position: relative; overflow: hidden;
       transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s;
     }
-    .proj-card::after { content:''; position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,120,142,.06),rgba(184,150,62,.04));opacity:0;transition:opacity .35s; }
+    .proj-card::after { content:''; position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,120,142,.06),rgba(184,150,62,.04));opacity:0;transition:opacity .35s; pointer-events:none; }
     .proj-card:hover { transform:translateY(-7px); box-shadow:0 20px 52px rgba(184,150,62,.13); }
     .proj-card:hover::after { opacity:1; }
 
@@ -346,7 +346,9 @@
             <span class="tag tag-gold">Github Pages</span>
             <span class="tag tag-pink">Privacy Architecture</span>
           </div>
-          <a href="https://github.com/Jihyun-KR/BodyMLCollector" class="proj-link" target="_blank">View Project →</a>
+          <a href="https://jihyun-kr.github.io/AutoCaptureBodyMeasurement/" class="proj-link" target="_blank">Live Demo →</a>
+          &nbsp;&nbsp;
+          <a href="https://github.com/Jihyun-KR/BodyMLCollector" class="proj-link" style="font-size:0.72rem;opacity:0.6;" target="_blank">GitHub →</a>
         </div>
         <div class="proj-card reveal" style="transition-delay:.1s">
           <div class="proj-num">02</div>
