@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flowen — AI Designer &amp; Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
     :root {
       --white:      #FFFDF8;
@@ -29,7 +31,7 @@
     body {
       background: var(--white);
       color: var(--ink);
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -155,10 +157,12 @@
     .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
 
     .about-text p {
-      font-size: 1.05rem; font-weight: 400; line-height: 2.05;
-      color: var(--ink-mid); margin-bottom: 20px;
+      font-size: 1.05rem; font-weight: 400; line-height: 2.4;
+      color: var(--ink-mid); margin-bottom: 36px;
       word-break: keep-all;
+      letter-spacing: 0.01em;
     }
+    .about-text p:last-child { margin-bottom: 0; }
     .about-text p strong { color: var(--ink); font-weight: 700; }
 
     .cards { display:flex; flex-direction:column; gap:16px; }
@@ -300,13 +304,13 @@
         <div class="sec-label">About me</div>
         <h2 class="sec-title">나에 대해</h2>
         <p>비전공자로 AI 분야에 뛰어들어<br>
-        현재 <strong>부트캠프에서 집중 학습</strong> 중입니다.<br>
-        수업에서 배운 개념을 바로 실제 프로젝트로<br>
-        연결하는 것을 즐깁니다.</p>
+        현재 <strong>부트캠프에서 집중 학습</strong> 중입니다.</p>
+        <p>수업에서 배운 개념을 바로<br>
+        실제 프로젝트로 연결하는 것을 즐깁니다.</p>
         <p>기술 그 자체보다,<br>
         그 기술이 <strong>사람에게 어떻게 닿는지</strong>에<br>
-        관심이 많습니다.<br>
-        복잡한 것을 단순하고 아름답게<br>
+        관심이 많습니다.</p>
+        <p>복잡한 것을 단순하고 아름답게<br>
         기획하는 일을 좋아해요.</p>
       </div>
       <div class="cards reveal" style="transition-delay:.12s">
@@ -392,14 +396,14 @@
       <p class="contact-sub reveal">새로운 프로젝트, 협업,<br>혹은 그냥 안녕이라도 — 언제든 환영합니다.</p>
       <div class="contact-btns reveal">
         <a href="https://github.com/Jihyun-KR" class="btn btn-gold" target="_blank">🐱 GitHub</a>
-        <a href="mailto:8756934@naver.com" class="btn btn-ghost">✉ Email</a>
+        <a href="/cdn-cgi/l/email-protection#774f4042414e44433719160112055914181a" class="btn btn-ghost">✉ Email</a>
       </div>
     </div>
   </section>
 
   <footer>flowen © 2025 &nbsp;·&nbsp; made with <span>💛</span></footer>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // ── cursor
     const cur = document.getElementById('cur');
     const curR = document.getElementById('curR');
@@ -419,10 +423,13 @@
     });
 
     // ── scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
     const io = new IntersectionObserver(es=>{
       es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
-    },{threshold:.08});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    },{threshold:0, rootMargin:'0px 0px -40px 0px'});
+    revealEls.forEach(el=>io.observe(el));
+    // 안전장치: 2초 후에도 안 보이면 강제로 보이게
+    setTimeout(()=>{ revealEls.forEach(el=>el.classList.add('on')); }, 2000);
 
     // ── petals
     const pc=['#F2A7B8','#E8C97A','#FADADD','#D4AE5A','#FCE4EC'];
@@ -434,12 +441,4 @@
         background:pc[Math.floor(Math.random()*pc.length)],
         animationDuration:(10+Math.random()*14)+'s',
         animationDelay:(Math.random()*20)+'s',
-        width:(5+Math.random()*7)+'px',
-        height:(8+Math.random()*9)+'px',
-        opacity:.45,
-      });
-      document.body.appendChild(p);
-    }
-  </script>
-</body>
-</html>
+        width:(5+Math.random()*7)+
