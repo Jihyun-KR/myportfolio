@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flowen — AI Designer & Planner</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --white: #FFFDF8;
@@ -26,8 +26,10 @@
     body {
       background: var(--white);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
       cursor: none;
     }
@@ -137,8 +139,11 @@
     .hero-name .pink { color: var(--pink); }
     .hero-sub {
       font-size: clamp(0.9rem, 2vw, 1.1rem);
-      color: var(--text-mid); line-height: 2;
+      color: var(--text-mid); line-height: 2.1;
       max-width: 520px; margin: 0 auto 52px;
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 300;
+      letter-spacing: 0.02em;
       animation: fadeUp 0.8s 0.3s ease both;
     }
     .hero-scroll {
@@ -180,7 +185,14 @@
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 80px; max-width: 1100px; margin: 0 auto; align-items: start;
     }
-    .about-text p { font-size:1rem; line-height:2; color:var(--text-mid); margin-bottom:18px; }
+    .about-text p {
+      font-size: 1rem; line-height: 2.1;
+      color: var(--text-mid); margin-bottom: 22px;
+      font-family: 'Noto Serif KR', serif;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      word-break: keep-all;
+    }
     .about-cards { display:flex; flex-direction:column; gap:18px; }
     .about-card {
       background: var(--white); border: 1px solid var(--border);
@@ -333,7 +345,8 @@
         <span class="gold">Flo</span><span class="pink">wen</span>
       </h1>
       <p class="hero-sub">
-        비전공자에서 AI 서비스를 직접 설계하기까지.<br/>
+        비전공자에서<br/>
+        AI 서비스를 직접 설계하기까지.<br/><br/>
         기술과 사람 사이의 다리를 만들고,<br/>
         꽃처럼 피어나는 흐름을 그립니다.
       </p>
@@ -350,8 +363,8 @@
       <div class="reveal">
         <div class="section-label">About me</div>
         <h2 class="section-title">나에 대해</h2>
-        <p>비전공자로 AI 분야에 뛰어들어 현재 부트캠프에서 집중 학습 중입니다. 수업에서 배운 개념을 바로 실제 프로젝트로 연결하는 것을 즐깁니다.</p>
-        <p>기술 그 자체보다 그 기술이 사람에게 어떻게 닿는지에 관심이 많습니다. 복잡한 것을 단순하고 아름답게 기획하는 일을 좋아해요.</p>
+        <p>비전공자로 AI 분야에 뛰어들어<br/>현재 부트캠프에서 집중 학습 중입니다.<br/>수업에서 배운 개념을 바로 실제 프로젝트로<br/>연결하는 것을 즐깁니다.</p>
+        <p>기술 그 자체보다<br/>그 기술이 사람에게 어떻게 닿는지에<br/>관심이 많습니다.<br/>복잡한 것을 단순하고 아름답게<br/>기획하는 일을 좋아해요.</p>
       </div>
       <div class="about-cards reveal" style="transition-delay:0.15s">
         <div class="about-card">
@@ -438,14 +451,14 @@
       <p class="contact-sub reveal">새로운 프로젝트, 협업,<br/>혹은 그냥 안녕이라도 — 언제든 환영합니다.</p>
       <div class="contact-links reveal">
         <a href="https://github.com/Jihyun-KR" class="contact-btn primary" target="_blank">🐱 GitHub</a>
-        <a href="mailto:8756934@naver.com" class="contact-btn secondary">✉ Email</a>
+        <a href="/cdn-cgi/l/email-protection#b78f8082818e8483f7d9d6c1d2c599d4d8da" class="contact-btn secondary">✉ Email</a>
       </div>
     </div>
   </section>
 
   <footer>flowen © 2025 &nbsp;·&nbsp; made with <span>💛</span></footer>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // Custom cursor
     const cursor = document.getElementById('cursor');
     const ring   = document.getElementById('cursorRing');
@@ -483,11 +496,4 @@
         background: petalColors[Math.floor(Math.random()*petalColors.length)],
         animationDuration: (9+Math.random()*14)+'s',
         animationDelay: (Math.random()*18)+'s',
-        width: (6+Math.random()*8)+'px',
-        height: (9+Math.random()*10)+'px',
-      });
-      document.body.appendChild(p);
-    }
-  </script>
-</body>
-</html>
+        width: (
