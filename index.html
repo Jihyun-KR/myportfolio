@@ -130,7 +130,7 @@
     .scroll-hint .line { width:1px;height:52px;background:linear-gradient(to bottom,var(--gold-light),transparent);animation:pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
 
-    @keyframes up { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
     /* ─── SECTION COMMON ─────────────────────── */
     .sec { padding: 110px 64px; position: relative; }
@@ -248,8 +248,9 @@
     footer span { color:var(--gold-light); }
 
     /* ─── REVEAL ──────────────────────────────── */
-    .reveal { opacity:0; transform:translateY(36px); transition:opacity .75s ease, transform .75s cubic-bezier(.25,.46,.45,.94); }
-    .reveal.on { opacity:1; transform:translateY(0); }
+    .reveal { opacity:1; transform:none; transition:opacity .75s ease, transform .75s cubic-bezier(.25,.46,.45,.94); }
+    .reveal.ready { opacity:0; transform:translateY(36px); }
+    .reveal.ready.on { opacity:1; transform:none; }
 
     /* ─── RESPONSIVE ──────────────────────────── */
     @media(max-width:768px) {
@@ -422,14 +423,16 @@
       el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';cur.style.background='var(--gold)';});
     });
 
-    // ── scroll reveal
+    // ── scroll reveal (progressive enhancement)
     const revealEls = document.querySelectorAll('.reveal');
+    // JS 있을 때만 숨김 처리 → JS 없거나 느려도 항상 보임
+    revealEls.forEach(el => el.classList.add('ready'));
     const io = new IntersectionObserver(es=>{
       es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
-    },{threshold:0, rootMargin:'0px 0px -40px 0px'});
+    },{threshold:0, rootMargin:'0px 0px -30px 0px'});
     revealEls.forEach(el=>io.observe(el));
-    // 안전장치: 2초 후에도 안 보이면 강제로 보이게
-    setTimeout(()=>{ revealEls.forEach(el=>el.classList.add('on')); }, 2000);
+    // 안전장치: 1.5초 후 강제 표시
+    setTimeout(()=>{ revealEls.forEach(el=>el.classList.add('on')); }, 1500);
 
     // ── petals
     const pc=['#F2A7B8','#E8C97A','#FADADD','#D4AE5A','#FCE4EC'];
