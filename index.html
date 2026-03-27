@@ -6,7 +6,8 @@
   <title>Flowen — AI Designer &amp; Planner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
 
     :root {
@@ -31,16 +32,12 @@
     body {
       background: var(--white);
       color: var(--ink);
-      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
       font-weight: 400;
+      font-size: 17px;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-
-    /* ─── CURSOR ─────────────────────────────── */
-    * { cursor: none; }
-    #cur  { width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:background .15s,width .2s,height .2s; }
-    #curR { width:32px;height:32px;border:1.5px solid var(--pink-light);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998; }
 
     /* ─── NAV ─────────────────────────────────── */
     nav {
@@ -59,7 +56,8 @@
     .logo em { color: var(--gold); font-style: italic; }
     .nav-links { display:flex; gap:32px; list-style:none; }
     .nav-links a {
-      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em;
+      font-size: 0.74rem; font-weight: 500; letter-spacing: 0.18em;
+      font-family: 'Pretendard', sans-serif;
       text-transform: uppercase; color: var(--ink-mid); text-decoration: none;
       position: relative; transition: color .25s;
     }
@@ -112,12 +110,13 @@
     h1.name .p { color: var(--pink); }
 
     .hero-copy {
-      font-size: clamp(1rem, 1.8vw, 1.2rem);
-      font-weight: 400; line-height: 2;
+      font-size: clamp(1.05rem, 1.9vw, 1.25rem);
+      font-weight: 400; line-height: 2.3;
       color: var(--ink-mid);
-      max-width: 480px; margin: 0 auto 56px;
+      max-width: 500px; margin: 0 auto 56px;
       animation: up .7s .25s ease both;
       word-break: keep-all;
+      letter-spacing: 0.04em;
     }
     .hero-copy strong { color: var(--ink); font-weight: 700; }
 
@@ -157,10 +156,10 @@
     .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
 
     .about-text p {
-      font-size: 1.05rem; font-weight: 400; line-height: 2.4;
-      color: var(--ink-mid); margin-bottom: 36px;
+      font-size: 1.05rem; font-weight: 400; line-height: 2.3;
+      color: var(--ink-mid); margin-bottom: 28px;
       word-break: keep-all;
-      letter-spacing: 0.01em;
+      letter-spacing: 0.04em;
     }
     .about-text p:last-child { margin-bottom: 0; }
     .about-text p strong { color: var(--ink); font-weight: 700; }
@@ -175,8 +174,8 @@
     .card::before { content:''; position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--pink)); }
     .card:hover { transform: translateX(6px); box-shadow: -4px 8px 24px rgba(184,150,62,.1); }
     .card-icon { font-size:1.3rem; margin-bottom:8px; }
-    .card-title { font-size:.92rem; font-weight:700; color:var(--ink); margin-bottom:3px; }
-    .card-sub   { font-size:.8rem; font-weight:400; color:var(--ink-soft); }
+    .card-title { font-size:.95rem; font-weight:700; color:var(--ink); margin-bottom:3px; }
+    .card-sub   { font-size:.85rem; font-weight:400; color:var(--ink-soft); }
 
     /* ─── PROJECTS ────────────────────────────── */
     #projects { background: var(--white); }
@@ -265,9 +264,6 @@
 </head>
 <body>
 
-  <div id="cur"></div>
-  <div id="curR"></div>
-
   <!-- NAV -->
   <nav>
     <a href="#hero" class="logo">flo<em>wen</em></a>
@@ -304,15 +300,15 @@
       <div class="reveal">
         <div class="sec-label">About me</div>
         <h2 class="sec-title">나에 대해</h2>
-        <p>비전공자로 AI 분야에 뛰어들어<br>
-        현재 <strong>부트캠프에서 집중 학습</strong> 중입니다.</p>
-        <p>수업에서 배운 개념을 바로<br>
-        실제 프로젝트로 연결하는 것을 즐깁니다.</p>
+        <div class="about-text">
+        <p>비전공자로 AI 분야에 뛰어들어,<br>
+        현재 <strong>부트캠프에서 집중 학습</strong> 중입니다.<br>
+        수업에서 배운 개념을 바로 실제 프로젝트로<br>
+        연결하는 것을 즐깁니다.</p>
         <p>기술 그 자체보다,<br>
-        그 기술이 <strong>사람에게 어떻게 닿는지</strong>에<br>
-        관심이 많습니다.</p>
-        <p>복잡한 것을 단순하고 아름답게<br>
-        기획하는 일을 좋아해요.</p>
+        그 기술이 <strong>사람에게 어떻게 닿는지</strong>에 관심이 많습니다.<br>
+        복잡한 것을 단순하고 아름답게 기획하는 일을 좋아해요.</p>
+        </div>
       </div>
       <div class="cards reveal" style="transition-delay:.12s">
         <div class="card">
@@ -404,25 +400,7 @@
 
   <footer>flowen © 2025 &nbsp;·&nbsp; made with <span>💛</span></footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // ── cursor
-    const cur = document.getElementById('cur');
-    const curR = document.getElementById('curR');
-    let mx=0,my=0,rx=0,ry=0;
-    document.addEventListener('mousemove', e => {
-      mx=e.clientX; my=e.clientY;
-      cur.style.transform=`translate(${mx-4}px,${my-4}px)`;
-    });
-    (function loop(){
-      rx+=(mx-rx-16)*.1; ry+=(my-ry-16)*.1;
-      curR.style.transform=`translate(${rx}px,${ry}px)`;
-      requestAnimationFrame(loop);
-    })();
-    document.querySelectorAll('a,button,.proj-card,.skill,.card').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';cur.style.background='var(--pink)';});
-      el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';cur.style.background='var(--gold)';});
-    });
-
+  <script>
     // ── scroll reveal (progressive enhancement)
     const revealEls = document.querySelectorAll('.reveal');
     // JS 있을 때만 숨김 처리 → JS 없거나 느려도 항상 보임
