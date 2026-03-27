@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flowen — AI Designer &amp; Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+
+    :root {
+      --white:      #FFFDF8;
+      --cream:      #FFF8EE;
+      --gold:       #B8963E;
+      --gold-light: #D4AE5A;
+      --gold-pale:  #F0DCA8;
+      --gold-bg:    #FBF3E0;
+      --pink:       #D4788E;
+      --pink-light: #E8A0B0;
+      --pink-pale:  #FCEEF2;
+      --ink:        #1E1810;
+      --ink-mid:    #4A3D2E;
+      --ink-soft:   #8A7A68;
+      --border:     rgba(184,150,62,0.22);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── CURSOR ─────────────────────────────── */
+    * { cursor: none; }
+    #cur  { width:8px;height:8px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:background .15s,width .2s,height .2s; }
+    #curR { width:32px;height:32px;border:1.5px solid var(--pink-light);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998; }
+
+    /* ─── NAV ─────────────────────────────────── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:200;
+      display: flex; justify-content:space-between; align-items:center;
+      padding: 22px 64px;
+      background: rgba(255,253,248,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--ink); text-decoration: none;
+    }
+    .logo em { color: var(--gold); font-style: italic; }
+    .nav-links { display:flex; gap:32px; list-style:none; }
+    .nav-links a {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ink-mid); text-decoration: none;
+      position: relative; transition: color .25s;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-4px; left:0; width:0; height:1.5px;
+      background: var(--gold); transition: width .3s ease;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width:100%; }
+
+    /* ─── HERO ────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 130px 64px 90px;
+      position: relative; overflow: hidden;
+      background: var(--white);
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .hero-blob.b1 { width:500px;height:500px;background:rgba(212,120,142,0.13);top:-140px;right:-140px;animation:blob1 11s ease-in-out infinite; }
+    .hero-blob.b2 { width:380px;height:380px;background:rgba(184,150,62,0.10);bottom:-100px;left:-80px;animation:blob1 13s ease-in-out infinite reverse; }
+    @keyframes blob1 { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-28px) scale(1.06)} }
+
+    /* petals */
+    .petal { position:fixed;border-radius:60% 40% 60% 40%;pointer-events:none;z-index:1;opacity:0;animation:fall linear infinite; }
+    @keyframes fall { 0%{opacity:0;transform:translateY(-10px) rotate(0deg)} 8%{opacity:.5} 92%{opacity:.2} 100%{opacity:0;transform:translateY(105vh) rotate(540deg)} }
+
+    .hero-inner { position:relative;z-index:2;text-align:center;max-width:860px; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); border: 1.5px solid var(--gold-pale);
+      padding: 7px 22px; border-radius: 100px; margin-bottom: 36px;
+      background: rgba(240,220,168,0.2);
+      animation: up .7s ease both;
+    }
+
+    h1.name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(5rem, 12vw, 11rem);
+      font-weight: 600; line-height: .88; letter-spacing: -.01em;
+      margin-bottom: 32px;
+      animation: up .7s .12s ease both;
+    }
+    h1.name .g { color: var(--gold); font-style: italic; }
+    h1.name .p { color: var(--pink); }
+
+    .hero-copy {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      font-weight: 400; line-height: 2;
+      color: var(--ink-mid);
+      max-width: 480px; margin: 0 auto 56px;
+      animation: up .7s .25s ease both;
+      word-break: keep-all;
+    }
+    .hero-copy strong { color: var(--ink); font-weight: 700; }
+
+    .scroll-hint {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: up .7s .4s ease both;
+      font-size: 0.65rem; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .scroll-hint .line { width:1px;height:52px;background:linear-gradient(to bottom,var(--gold-light),transparent);animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+    @keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ─── SECTION COMMON ─────────────────────── */
+    .sec { padding: 110px 64px; position: relative; }
+    .sec-inner { max-width: 1080px; margin: 0 auto; }
+
+    .sec-label {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.68rem; font-weight: 500; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .sec-label::before { content:''; width:24px; height:1.5px; background: var(--gold-light); }
+
+    h2.sec-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 600; line-height: 1.05; color: var(--ink);
+      margin-bottom: 56px;
+    }
+
+    /* ─── ABOUT ───────────────────────────────── */
+    #about { background: var(--cream); }
+    #about::before { content:''; position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(to right,transparent,var(--gold-pale),transparent); }
+
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+
+    .about-text p {
+      font-size: 1.05rem; font-weight: 400; line-height: 2.4;
+      color: var(--ink-mid); margin-bottom: 36px;
+      word-break: keep-all;
+      letter-spacing: 0.01em;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text p strong { color: var(--ink); font-weight: 700; }
+
+    .cards { display:flex; flex-direction:column; gap:16px; }
+    .card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 24px 28px;
+      position: relative; overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .card::before { content:''; position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--gold),var(--pink)); }
+    .card:hover { transform: translateX(6px); box-shadow: -4px 8px 24px rgba(184,150,62,.1); }
+    .card-icon { font-size:1.3rem; margin-bottom:8px; }
+    .card-title { font-size:.92rem; font-weight:700; color:var(--ink); margin-bottom:3px; }
+    .card-sub   { font-size:.8rem; font-weight:400; color:var(--ink-soft); }
+
+    /* ─── PROJECTS ────────────────────────────── */
+    #projects { background: var(--white); }
+
+    .proj-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; }
+
+    .proj-card {
+      border: 1.5px solid var(--border); border-radius: 18px;
+      padding: 36px 32px; background: var(--white);
+      position: relative; overflow: hidden;
+      transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s;
+    }
+    .proj-card::after { content:''; position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,120,142,.06),rgba(184,150,62,.04));opacity:0;transition:opacity .35s; }
+    .proj-card:hover { transform:translateY(-7px); box-shadow:0 20px 52px rgba(184,150,62,.13); }
+    .proj-card:hover::after { opacity:1; }
+
+    .proj-num {
+      font-family:'Cormorant Garamond',serif; font-size:3.6rem; font-weight:600;
+      color: var(--gold-pale); line-height:1; margin-bottom:16px;
+    }
+    .proj-title { font-family:'Cormorant Garamond',serif; font-size:1.7rem; font-weight:600; color:var(--ink); margin-bottom:10px; }
+    .proj-desc  { font-size:.88rem; font-weight:400; line-height:1.85; color:var(--ink-mid); margin-bottom:20px; word-break:keep-all; }
+
+    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px; }
+    .tag { font-size:.66rem; font-weight:500; letter-spacing:.08em; padding:4px 12px; border-radius:100px; }
+    .tag-pink { background:var(--pink-pale); color:var(--pink); border:1px solid rgba(212,120,142,.25); }
+    .tag-gold { background:var(--gold-bg); color:var(--gold); border:1px solid rgba(184,150,62,.25); }
+
+    .proj-link { display:inline-flex;align-items:center;gap:7px;font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;transition:gap .25s; }
+    .proj-link:hover { gap:13px; }
+    .proj-wip { font-size:.75rem; font-weight:400; color:var(--ink-soft); font-style:italic; }
+
+    /* ─── SKILLS ──────────────────────────────── */
+    #skills { background: var(--pink-pale); }
+    #skills::before { content:''; position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(to right,transparent,rgba(212,120,142,.4),transparent); }
+
+    .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; }
+
+    .skill {
+      background:var(--white); border:1.5px solid rgba(212,120,142,.2);
+      border-radius:14px; padding:26px 20px; text-align:center;
+      transition:transform .28s, box-shadow .28s;
+    }
+    .skill:hover { transform:translateY(-4px); box-shadow:0 10px 28px rgba(212,120,142,.14); }
+    .skill-icon { font-size:1.8rem; margin-bottom:10px; }
+    .skill-name { font-size:.92rem; font-weight:700; color:var(--ink); margin-bottom:4px; }
+    .skill-desc { font-size:.76rem; font-weight:400; color:var(--ink-soft); line-height:1.5; }
+
+    /* ─── CONTACT ─────────────────────────────── */
+    #contact { background: var(--ink); }
+    .contact-inner { max-width:640px; margin:0 auto; text-align:center; }
+    #contact .sec-label { color:var(--gold-light); justify-content:center; }
+    #contact .sec-label::before { display:none; }
+    #contact h2.sec-title { color:var(--white); margin-bottom:16px; }
+    .contact-sub { font-size:1rem; font-weight:400; line-height:1.95; color:rgba(255,253,248,.55); margin-bottom:48px; word-break:keep-all; }
+    .contact-btns { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex; align-items:center; gap:9px;
+      padding:13px 30px; border-radius:100px;
+      font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+      text-decoration:none; transition:transform .28s, box-shadow .28s;
+    }
+    .btn-gold { background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--ink); }
+    .btn-ghost { background:transparent; color:var(--white); border:1.5px solid rgba(255,253,248,.22); }
+    .btn:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(184,150,62,.3); }
+
+    /* ─── FOOTER ──────────────────────────────── */
+    footer { background:var(--ink); color:rgba(255,253,248,.25); text-align:center; padding:24px; font-size:.72rem; letter-spacing:.1em; border-top:1px solid rgba(255,253,248,.07); }
+    footer span { color:var(--gold-light); }
+
+    /* ─── REVEAL ──────────────────────────────── */
+    .reveal { opacity:1; transform:none; transition:opacity .75s ease, transform .75s cubic-bezier(.25,.46,.45,.94); }
+    .reveal.ready { opacity:0; transform:translateY(36px); }
+    .reveal.ready.on { opacity:1; transform:none; }
+
+    /* ─── RESPONSIVE ──────────────────────────── */
+    @media(max-width:768px) {
+      nav { padding:18px 22px; }
+      .nav-links { gap:18px; }
+      .sec { padding:80px 22px; }
+      #hero { padding:110px 22px 70px; }
+      .about-grid { grid-template-columns:1fr; gap:40px; }
+      .proj-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cur"></div>
+  <div id="curR"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="logo">flo<em>wen</em></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow">✦ AI Designer &amp; Planner</div>
+      <h1 class="name"><span class="g">Flo</span><span class="p">wen</span></h1>
+      <p class="hero-copy">
+        비전공자에서 <strong>AI 서비스를 직접 설계</strong>하기까지.<br>
+        기술과 사람 사이의 다리를 만들고,<br>
+        꽃처럼 피어나는 흐름을 그립니다.
+      </p>
+      <div class="scroll-hint">
+        <div class="line"></div>
+        scroll
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="sec">
+    <div class="sec-inner about-grid">
+      <div class="reveal">
+        <div class="sec-label">About me</div>
+        <h2 class="sec-title">나에 대해</h2>
+        <p>비전공자로 AI 분야에 뛰어들어<br>
+        현재 <strong>부트캠프에서 집중 학습</strong> 중입니다.</p>
+        <p>수업에서 배운 개념을 바로<br>
+        실제 프로젝트로 연결하는 것을 즐깁니다.</p>
+        <p>기술 그 자체보다,<br>
+        그 기술이 <strong>사람에게 어떻게 닿는지</strong>에<br>
+        관심이 많습니다.</p>
+        <p>복잡한 것을 단순하고 아름답게<br>
+        기획하는 일을 좋아해요.</p>
+      </div>
+      <div class="cards reveal" style="transition-delay:.12s">
+        <div class="card">
+          <div class="card-icon">🌿</div>
+          <div class="card-title">Microsoft AI School 9기 수강 중</div>
+          <div class="card-sub">부트캠프에서 AI 서비스 기획 · 개발 학습</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">Korea University Economics</div>
+          <div class="card-sub">고려대학교 경제학 학부 졸업</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🌱</div>
+          <div class="card-title">금융감독원 금융교육봉사단</div>
+          <div class="card-sub">금융감독원장상 수상</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="sec">
+    <div class="sec-inner">
+      <div class="sec-label reveal">Projects</div>
+      <h2 class="sec-title reveal">직접 만든 것들</h2>
+      <div class="proj-grid">
+        <div class="proj-card reveal">
+          <div class="proj-num">01</div>
+          <h3 class="proj-title">Body ML Collector</h3>
+          <p class="proj-desc">Privacy-Protected Architecture 기반 신체 데이터 수집 도구. MediaPipe와 Azure ML을 활용해 프라이버시를 보호하는 ML 데이터를 수집합니다.</p>
+          <div class="tags">
+            <span class="tag tag-gold">Azure ML</span>
+            <span class="tag tag-pink">MediaPipe</span>
+            <span class="tag tag-gold">Github Pages</span>
+            <span class="tag tag-pink">Privacy Architecture</span>
+          </div>
+          <a href="https://github.com/Jihyun-KR/BodyMLCollector" class="proj-link" target="_blank">View Project →</a>
+        </div>
+        <div class="proj-card reveal" style="transition-delay:.1s">
+          <div class="proj-num">02</div>
+          <h3 class="proj-title">체형 분석 패션 추천 AI</h3>
+          <p class="proj-desc">Body ML Collector를 활용한 체형 분석 기반 패션 추천 서비스. AI가 체형을 분석하고 개인화된 스타일을 제안합니다.</p>
+          <div class="tags">
+            <span class="tag tag-gold">Azure ML</span>
+            <span class="tag tag-pink">AI Services</span>
+          </div>
+          <span class="proj-wip">✦ 제작 중</span>
+        </div>
+        <div class="proj-card reveal" style="transition-delay:.2s">
+          <div class="proj-num">03</div>
+          <h3 class="proj-title">Coming Soon</h3>
+          <p class="proj-desc">새로운 프로젝트가 피어나는 중입니다. 기술과 기획이 만나는 자리를 기대해 주세요.</p>
+          <div class="tags"><span class="tag tag-pink">준비 중</span></div>
+          <span class="proj-wip">✦ 기획 중</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="sec">
+    <div class="sec-inner">
+      <div class="sec-label reveal">Skills</div>
+      <h2 class="sec-title reveal">할 수 있는 것들</h2>
+      <div class="skills-grid">
+        <div class="skill reveal"><div class="skill-icon">🐍</div><div class="skill-name">Python</div><div class="skill-desc">데이터 전처리</div></div>
+        <div class="skill reveal" style="transition-delay:.07s"><div class="skill-icon">🌐</div><div class="skill-name">HTML / JS</div><div class="skill-desc">노코드 툴 제작</div></div>
+        <div class="skill reveal" style="transition-delay:.14s"><div class="skill-icon">🐱</div><div class="skill-name">GitHub</div><div class="skill-desc">버전 관리 · 포트폴리오</div></div>
+        <div class="skill reveal" style="transition-delay:.21s"><div class="skill-icon">☁️</div><div class="skill-name">Azure ML</div><div class="skill-desc">Pipeline Design</div></div>
+        <div class="skill reveal" style="transition-delay:.28s"><div class="skill-icon">🌸</div><div class="skill-name">서비스 기획</div><div class="skill-desc">사용자 중심 설계</div></div>
+        <div class="skill reveal" style="transition-delay:.35s"><div class="skill-icon">✨</div><div class="skill-name">AI Prompt</div><div class="skill-desc">프롬프트 엔지니어링</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="sec">
+    <div class="contact-inner">
+      <div class="sec-label reveal">Contact</div>
+      <h2 class="sec-title reveal">같이 만들어요</h2>
+      <p class="contact-sub reveal">새로운 프로젝트, 협업,<br>혹은 그냥 안녕이라도 — 언제든 환영합니다.</p>
+      <div class="contact-btns reveal">
+        <a href="https://github.com/Jihyun-KR" class="btn btn-gold" target="_blank">🐱 GitHub</a>
+        <a href="/cdn-cgi/l/email-protection#774f4042414e44433719160112055914181a" class="btn btn-ghost">✉ Email</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>flowen © 2025 &nbsp;·&nbsp; made with <span>💛</span></footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // ── cursor
+    const cur = document.getElementById('cur');
+    const curR = document.getElementById('curR');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => {
+      mx=e.clientX; my=e.clientY;
+      cur.style.transform=`translate(${mx-4}px,${my-4}px)`;
+    });
+    (function loop(){
+      rx+=(mx-rx-16)*.1; ry+=(my-ry-16)*.1;
+      curR.style.transform=`translate(${rx}px,${ry}px)`;
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a,button,.proj-card,.skill,.card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';cur.style.background='var(--pink)';});
+      el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px';cur.style.background='var(--gold)';});
+    });
+
+    // ── scroll reveal (progressive enhancement)
+    const revealEls = document.querySelectorAll('.reveal');
+    // JS 있을 때만 숨김 처리 → JS 없거나 느려도 항상 보임
+    revealEls.forEach(el => el.classList.add('ready'));
+    const io = new IntersectionObserver(es=>{
+      es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+    },{threshold:0, rootMargin:'0px 0px -30px 0px'});
+    revealEls.forEach(el=>io.observe(el));
+    // 안전장치: 1.5초 후 강제 표시
+    setTimeout(()=>{ revealEls.forEach(el=>el.classList.add('on')); }, 1500);
+
+    // ── petals
+    const pc=['#F2A7B8','#E8C97A','#FADADD','#D4AE5A','#FCE4EC'];
+    for(let i=0;i<16;i++){
+      const p=document.createElement('div');
+      p.className='petal';
+      Object.assign(p.style,{
+        left:Math.random()*100+'vw',
+        background:pc[Math.floor(Math.random()*pc.length)],
+        animationDuration:(10+Math.random()*14)+'s',
+        animationDelay:(Math.random()*20)+'s',
+        width:(5+Math.random()*7)+
